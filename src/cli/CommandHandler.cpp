@@ -37,8 +37,6 @@ int CommandHandler::execute(int argc, char* argv[]) {
         return handleWipeOldCommand(args);
     } else if (command == "load") {
         return handleLoadCommand(args);
-    } else if (command == "gui") {
-        return handleGuiCommand(args);
     } else if (command == "--version" || command == "-v") {
         printVersion();
         return 0;
@@ -61,7 +59,6 @@ void CommandHandler::printUsage() const {
     std::cout << "  clean                                 Delete all backups\n";
     std::cout << "  wipeold                               Delete all backups except the most recent\n";
     std::cout << "  load [-last]                          Load a backup (interactive or last)\n";
-    std::cout << "  gui                                   Open GUI interface\n";
     std::cout << "  --help, -h                            Show this help message\n";
     std::cout << "  --version, -v                         Show version information\n";
     std::cout << "\nExamples:\n";
@@ -209,25 +206,6 @@ int CommandHandler::handleLoadCommand(const std::vector<std::string>& args) {
     return 1;
 }
 
-int CommandHandler::handleGuiCommand(const std::vector<std::string>& args) {
-    #ifdef _WIN32
-        std::string exePath = "bik_gui.exe";
-    #else
-        std::string exePath = "bik_gui";
-    #endif
-    
-    // Try to find and launch GUI executable
-    std::string cmd = exePath;
-    int result = system(cmd.c_str());
-    
-    if (result != 0) {
-        std::cerr << "Error: Could not launch GUI. Make sure bik_gui is built and in PATH.\n";
-        std::cerr << "Build with: cmake -DBUILD_GUI=ON ..\n";
-        return 1;
-    }
-    
-    return 0;
-}
 
 std::string CommandHandler::findArgValue(const std::vector<std::string>& args, 
                                          const std::string& flag) const {

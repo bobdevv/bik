@@ -23,7 +23,6 @@ private:
     int handleCleanCommand(const std::vector<std::string>& args);
     int handleWipeOldCommand(const std::vector<std::string>& args);
     int handleLoadCommand(const std::vector<std::string>& args);
-    int handleGuiCommand(const std::vector<std::string>& args);
     
     std::string findArgValue(const std::vector<std::string>& args, 
                             const std::string& flag) const;

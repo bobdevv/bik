@@ -1,11 +1,10 @@
 # Bik - Simple Backup Manager
 
-A lightweight C++ backup manager for code projects with both CLI and GUI interfaces.
+A lightweight C++ backup manager for code projects (CLI only).
 
 ## Features
 
 - **Simple CLI**: Easy-to-use command-line interface for quick backups
-- **Retro GUI**: Clean, terminal-style GUI for visual backup management
 - **Automatic Naming**: Auto-generates backup names with incremental numbers
 - **Project-Based**: Each project maintains its own backup configuration
 - **Zip Compression**: Efficient storage using zip compression
@@ -17,13 +16,13 @@ A lightweight C++ backup manager for code projects with both CLI and GUI interfa
 - CMake 3.15 or higher
 - C++17 compatible compiler (MSVC, GCC, or Clang)
 - ZLIB library
-- FLTK library (optional, for GUI)
+- libzip (preferred) or minizip for cross-platform zip support
 
 ### Windows
 
 ```powershell
 # Install dependencies (using vcpkg)
-vcpkg install zlib fltk
+vcpkg install zlib libzip minizip
 
 # Build
 mkdir build
@@ -40,13 +39,13 @@ cmake --install . --prefix ../install
 ```bash
 # Install dependencies
 # Ubuntu/Debian:
-sudo apt-get install zlib1g-dev libfltk1.3-dev
+sudo apt-get install zlib1g-dev libzip-dev   # or: sudo apt-get install libminizip-dev
 
 # Fedora:
-sudo dnf install zlib-devel fltk-devel
+sudo dnf install zlib-devel libzip-devel     # or: sudo dnf install minizip-devel
 
 # macOS:
-brew install zlib fltk
+brew install zlib libzip                     # or: brew install minizip
 
 # Build
 mkdir build
@@ -56,14 +55,6 @@ make
 
 # Install (optional)
 sudo make install
-```
-
-### Build without GUI
-
-If you don't want to build the GUI:
-
-```bash
-cmake .. -DBUILD_GUI=OFF
 ```
 
 ## Usage
@@ -112,20 +103,6 @@ bik clean
 bik wipeold
 ```
 
-### GUI
-
-Launch the GUI with:
-
-```bash
-bik gui
-```
-
-The GUI provides:
-- Visual list of all backups with timestamps and sizes
-- One-click backup creation
-- Easy backup loading and deletion
-- Retro terminal-style interface (green on black)
-
 ## How It Works
 
 1. **Project Initialization**: When you run `bik project -b <dir>`, it creates a `.bik/config.txt` file in your current directory storing the backup location.
@@ -170,9 +147,6 @@ bik/
 │   ├── cli/
 │   │   ├── main.cpp               # CLI entry point
 │   │   └── CommandHandler.h/cpp   # Command parsing and execution
-│   └── gui/
-│       ├── main.cpp               # GUI entry point
-│       └── MainWindow.h/cpp       # Main GUI window
 ```
 
 ## Configuration File

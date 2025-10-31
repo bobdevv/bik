@@ -7,6 +7,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Find required packages
 find_package(ZLIB REQUIRED)
 
+# Try to find a cross-platform zip library
+set(BIK_HAVE_LIBZIP OFF)
+set(BIK_HAVE_MINIZIP OFF)
+
+find_package(libzip QUIET)
+if(libzip_FOUND)
+    set(BIK_HAVE_LIBZIP ON)
+endif()
+
+# Some environments provide MiniZip
+find_package(MiniZip QUIET)
+if(MiniZip_FOUND)
+    set(BIK_HAVE_MINIZIP ON)
+endif()
+
 # Core library
 add_library(bik_core STATIC
     src/core/BackupManager.cpp
@@ -23,6 +38,21 @@ target_include_directories(bik_core PUBLIC
 
 target_link_libraries(bik_core PUBLIC ZLIB::ZLIB)
 
+if(BIK_HAVE_LIBZIP)
+    target_link_libraries(bik_core PUBLIC libzip::zip)
+    target_compile_definitions(bik_core PUBLIC BIK_HAVE_LIBZIP)
+elseif(BIK_HAVE_MINIZIP)
+    target_link_libraries(bik_core PUBLIC MiniZip::minizip)
+    target_compile_definitions(bik_core PUBLIC BIK_HAVE_MINIZIP)
+else()
+    if(WIN32)
+        message(WARNING "Neither libzip nor minizip found. Falling back to PowerShell Compress-Archive/Expand-Archive on Windows.")
+        target_compile_definitions(bik_core PUBLIC BIK_WINDOWS_POWERSHELL_FALLBACK)
+    else()
+        message(FATAL_ERROR "No zip backend found (libzip or minizip). Please install libzip or minizip.")
+    endif()
+endif()
+
 # CLI executable
 add_executable(bik
     src/cli/main.cpp
@@ -31,29 +61,6 @@ add_executable(bik
 )
 
 target_link_libraries(bik PRIVATE bik_core)
-
-# GUI executable (optional, requires Qt or FLTK)
-option(BUILD_GUI "Build GUI application" ON)
-
-if(BUILD_GUI)
-    # Try to find FLTK for simple retro GUI
-    find_package(FLTK)
-    
-    if(FLTK_FOUND)
-        add_executable(bik_gui
-            src/gui/main.cpp
-            src/gui/MainWindow.cpp
-            src/gui/MainWindow.h
-        )
-        
-        target_include_directories(bik_gui PRIVATE ${FLTK_INCLUDE_DIR})
-        target_link_libraries(bik_gui PRIVATE bik_core ${FLTK_LIBRARIES})
-        
-        install(TARGETS bik_gui DESTINATION bin)
-    else()
-        message(WARNING "FLTK not found. GUI will not be built. Install FLTK to enable GUI.")
-    endif()
-endif()
 
 # Installation
 install(TARGETS bik DESTINATION bin)
