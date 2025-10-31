@@ -310,53 +310,6 @@ bool ZipUtils::extractZip(const std::string& zipPath, const std::string& destDir
     return ok;
 }
 
-#elif defined(BIK_WINDOWS_POWERSHELL_FALLBACK)
-
-#include <cstdlib>
-
-bool ZipUtils::createZip(const std::string& sourceDir, const std::string& zipPath) {
-    try {
-        fs::path source = fs::absolute(sourceDir);
-        fs::path dest = fs::absolute(zipPath);
-        if (!fs::exists(source)) {
-            std::cerr << "Source directory does not exist: " << source << std::endl;
-            return false;
-        }
-        fs::create_directories(dest.parent_path());
-
-        // Use PowerShell Compress-Archive (Windows-only fallback)
-        std::string cmd = "powershell -NoProfile -Command \"Compress-Archive -Path '" +
-                          (source / "*").string() + "' -DestinationPath '" +
-                          dest.string() + "' -Force\"";
-        int result = std::system(cmd.c_str());
-        return result == 0;
-    } catch (const std::exception& e) {
-        std::cerr << "Error creating zip (fallback): " << e.what() << std::endl;
-        return false;
-    }
-}
-
-bool ZipUtils::extractZip(const std::string& zipPath, const std::string& destDir) {
-    try {
-        fs::path zip = fs::absolute(zipPath);
-        fs::path dest = fs::absolute(destDir);
-        if (!fs::exists(zip)) {
-            std::cerr << "Zip file does not exist: " << zip << std::endl;
-            return false;
-        }
-        fs::create_directories(dest);
-
-        std::string cmd = "powershell -NoProfile -Command \"Expand-Archive -Path '" +
-                          zip.string() + "' -DestinationPath '" +
-                          dest.string() + "' -Force\"";
-        int result = std::system(cmd.c_str());
-        return result == 0;
-    } catch (const std::exception& e) {
-        std::cerr << "Error extracting zip (fallback): " << e.what() << std::endl;
-        return false;
-    }
-}
-
 #else
 #error "No zip backend selected. Configure with libzip or minizip."
 #endif

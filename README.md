@@ -14,46 +14,34 @@ A lightweight C++ backup manager for code projects (CLI only).
 ### Prerequisites
 
 - CMake 3.15 or higher
-- C++17 compatible compiler (MSVC, GCC, or Clang)
+- C++17 compatible compiler (GCC or Clang)
 - ZLIB library
-- libzip (preferred) or minizip for cross-platform zip support
+- libzip (preferred) or minizip for zip support
 
-### Windows
+### Linux
 
-```powershell
-# Install dependencies (using vcpkg)
-vcpkg install zlib libzip minizip
-
-# Build
-mkdir build
-cd build
-cmake .. -DCMAKE_TOOLCHAIN_FILE=[path to vcpkg]/scripts/buildsystems/vcpkg.cmake
-cmake --build . --config Release
-
-# Install (optional)
-cmake --install . --prefix ../install
-```
-
-### Linux/macOS
+Required libraries: CMake, a C++ compiler (gcc or Clang), zlib, and either libzip or minizip.
 
 ```bash
 # Install dependencies
 # Ubuntu/Debian:
-sudo apt-get install zlib1g-dev libzip-dev ziptool zipmerge zipcmp  # or: sudo apt-get install libminizip-dev
+sudo apt-get install cmake build-essential zlib1g-dev libzip-dev
 
-# Fedora:
-sudo dnf install zlib-devel libzip-devel     # or: sudo dnf install minizip-devel
+# Or with minizip:
+sudo apt-get install cmake build-essential zlib1g-dev libminizip-dev
 
-# macOS:
-brew install zlib libzip                     # or: brew install minizip
+# Fedora/CentOS:
+sudo dnf install cmake gcc-c++ zlib-devel libzip-devel
+
+# Arch Linux:
+sudo pacman -S cmake gcc zlib libzip
 
 # Build
-mkdir build
-cd build
+mkdir build && cd build
 cmake ..
 make
 
-# Install (optional)
+# Install system-wide (optional)
 sudo make install
 ```
 
@@ -117,8 +105,8 @@ bik wipeold
 
 ```bash
 # Start a new project
-cd /my/project
-bik project -b D:/Backups
+cd /home/user/my-project
+bik project -b /home/user/backups
 
 # Make some changes, create a backup
 bik backup -n before-refactor
@@ -163,8 +151,7 @@ project_name=project-name
 
 - Backups are stored as standard zip files, so they can be extracted manually if needed
 - The `.bik` directory is never included in backups
-- On Windows, PowerShell's `Compress-Archive` and `Expand-Archive` are used for zip operations
-- The GUI requires FLTK to be installed
+- Uses libzip if available, else minizip for zip operations
 
 ## License
 

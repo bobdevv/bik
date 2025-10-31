@@ -45,12 +45,7 @@ elseif(BIK_HAVE_MINIZIP)
     target_link_libraries(bik_core PUBLIC MiniZip::minizip)
     target_compile_definitions(bik_core PUBLIC BIK_HAVE_MINIZIP)
 else()
-    if(WIN32)
-        message(WARNING "Neither libzip nor minizip found. Falling back to PowerShell Compress-Archive/Expand-Archive on Windows.")
-        target_compile_definitions(bik_core PUBLIC BIK_WINDOWS_POWERSHELL_FALLBACK)
-    else()
-        message(FATAL_ERROR "No zip backend found (libzip or minizip). Please install libzip or minizip.")
-    endif()
+    message(FATAL_ERROR "No zip backend found. Please install libzip or minizip.")
 endif()
 
 # CLI executable
