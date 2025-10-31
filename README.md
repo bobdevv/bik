@@ -39,7 +39,7 @@ cmake --install . --prefix ../install
 ```bash
 # Install dependencies
 # Ubuntu/Debian:
-sudo apt-get install zlib1g-dev libzip-dev   # or: sudo apt-get install libminizip-dev
+sudo apt-get install zlib1g-dev libzip-dev ziptool zipmerge zipcmp  # or: sudo apt-get install libminizip-dev
 
 # Fedora:
 sudo dnf install zlib-devel libzip-devel     # or: sudo dnf install minizip-devel
