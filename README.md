@@ -1,6 +1,7 @@
 # Bik - Simple Backup Manager
 
-A lightweight C++ backup manager for code projects (CLI only).
+A lightweight C++ backup manager for code projects (CLI only). basically a poor 
+man's git. nothing special
 
 ## Features
 
